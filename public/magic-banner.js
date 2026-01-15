@@ -2,7 +2,7 @@
 
     const pageUrl = window.location.href
 
-    fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/banners?url=${encodeURIComponent(pageUrl)}`)
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/banners?url=${encodeURIComponent(pageUrl)}`)
         .then(function (res) {
             if (res.status === 204) return null
             return res.json()
