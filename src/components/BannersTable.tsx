@@ -10,27 +10,29 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
-import { FaTrash, FaEdit } from "react-icons/fa"
-import Image from "next/image"
+import { FaTrash } from "react-icons/fa"
 import { Button } from "@/components/ui/button"
-import {  useQuery } from "@tanstack/react-query"
-import { getAllBanners } from "@/services/banners"
+import {  useQuery, useQueryClient } from "@tanstack/react-query"
+import { deleteBanner, getAllBanners } from "@/services/banners"
+import { EditBannerModal } from "./EditBannerModal"
 
 export function BannersTable() {
-    const handleEdit = (id: number) => {
-        console.log("Editar banner:", id)
-        // futuramente: router.push(`/banners/edit/${id}`)
-    }
-
-    const handleDelete = (id: number) => {
-        console.log("Excluir banner:", id)
-        // futuramente: chamada para API DELETE
-    }
+    const queryClient = useQueryClient()
 
     const { data: banners } = useQuery({
         queryKey: ['banners'],
-        queryFn: getAllBanners
+        queryFn: getAllBanners,
+        staleTime: 1000
     })
+
+    const handleEdit = (id: number) => {
+        console.log("Editar banner:", id)
+    }
+
+    const handleDelete = async (id: number) => {
+        await deleteBanner(id)
+        queryClient.invalidateQueries({ queryKey: ['banners'] })
+    }
 
     return (
         <Table>
@@ -73,18 +75,13 @@ export function BannersTable() {
 
                 <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
-                    <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={() => handleEdit(banner.id)}
-                    >
-                        <FaEdit size={14} />
-                    </Button>
+                    
+                    <EditBannerModal data={banner}/>
 
                     <Button
                         variant="destructive"
                         size="icon"
-                        onClick={() => handleDelete(banner.id)}
+                        onClick={() => handleDelete(banner.id as number)}
                     >
                         <FaTrash size={14} />
                     </Button>

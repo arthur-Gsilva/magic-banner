@@ -1,5 +1,5 @@
 export type bannerType = {
-    id: number,
+    id?: number,
     page_url: string,
     image_url: string,
     start_time: string | null,
